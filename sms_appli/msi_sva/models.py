@@ -11,7 +11,9 @@ class Question(models.Model):
 
 class Reponse(models.Model):
     question=models.ForeignKey(Question)
-    reponse_sms=models.CharField(max_length=160)
+    reponse_sms=models.CharField(max_length=160,unique=True)
+    def clean(self):
+        self.reponse_sms = self.reponse_sms.capitalize()
     def __str__(self):
         return self.reponse_sms
 
@@ -56,5 +58,37 @@ class Info(models.Model):
 
     def clean(self):
                 self.nom = self.nom.capitalize()
+                
     def __str__(self):
         return " %s  %s  %s " % (self.nom ,self.adresse,str(self.telephone_mobile))
+#systeme de vote
+class Campagne(models.Model):
+    nom = models.CharField(max_length=100,unique=True)
+    date_creation= models.DateTimeField()
+    nombre_total_vote = models.IntegerField(default=0)
+
+    def clean(self):
+                        self.nom = self.nom.capitalize()
+    #def clean(self):
+    #    self.nom = self.nom.capitalize()
+
+    def __str__(self):
+        return " %s %s " % (self.nom,str(self.nombre_total_vote))
+class Vote(models.Model):
+    campagne=models.ForeignKey(Campagne)
+    nom_candidat= models.CharField(max_length=20,unique=True)
+    id_candidat = models.CharField(max_length=5,unique=True)
+    votes= models.IntegerField(default=0)
+    def clean(self):
+        self.nom_candidat = self.nom_candidat.capitalize()
+        self.id_candidat = self.id_candidat.capitalize()
+    def __str__(self):
+        return " %s %s " % (self.nom_candidat,str(self.id_candidat))
+    
+
+
+        
+
+        
+
+
