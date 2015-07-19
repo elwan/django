@@ -1,14 +1,16 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import  Question,Info,Localisation,Categorie,SousCategorie,Reponse,Campagne,Vote
+from .models import  Question,Info,Categorie,SousCategorie,Reponse,Campagne,Vote,Region,Departemant,Commune
 
 #admin.site.register(Campagne)
-admin.site.register(Localisation)
+#admin.site.register(Localisation)
 admin.site.register(SousCategorie)
 admin.site.register(Info)
 admin.site.register(Categorie)
-#admin.site.register(Vote)
+admin.site.register(Region)
+admin.site.register(Departemant)
+admin.site.register(Commune)
 
 class Choix_reponse(admin.StackedInline):
     model=Reponse
