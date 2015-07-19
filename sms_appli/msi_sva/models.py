@@ -39,28 +39,13 @@ class SousCategorie(models.Model):
     def __str__(self):
         return self.nom_sous_categorie
 
-class Localisation(models.Model):
-    nom_zone=models.CharField(max_length=100,unique=True)
-    date_creation=models.DateTimeField('date creation')
+#class Localisation(models.Model):
+#    nom_zone=models.CharField(max_length=100,unique=True)
+#    date_creation=models.DateTimeField('date creation')
 
-    def __str__(self):
-        return self.nom_zone
+#    def __str__(self):
+#        return self.nom_zone
     
-class Info(models.Model):
-    nom =models.CharField(max_length=20,primary_key=True,unique=True)
-    adresse=models.CharField(max_length=50)
-    telephone_mobile =models.IntegerField()
-    telephone_fixe=models.IntegerField()
-    email=models.EmailField()
-    categorie=models.ForeignKey(SousCategorie)
-    localisation=models.ForeignKey(Localisation)
-    date_creation=models.DateTimeField('date creation')
-
-    def clean(self):
-                self.nom = self.nom.capitalize()
-                
-    def __str__(self):
-        return " %s  %s  %s " % (self.nom ,self.adresse,str(self.telephone_mobile))
 #systeme de vote
 class Campagne(models.Model):
     nom = models.CharField(max_length=100,unique=True)
@@ -84,11 +69,44 @@ class Vote(models.Model):
         self.id_candidat = self.id_candidat.capitalize()
     def __str__(self):
         return " %s %s " % (self.nom_candidat,str(self.id_candidat))
-    
 
+class Region(models.Model):
+    nom=models.CharField(max_length=50,unique=True)
+    def clean(self):
+        self.nom =self.nom.capitalize()
+    def __str__(self):
+        return " %s " %(self.nom)
 
-        
+class Departemant(models.Model):
+    nom = models.CharField(max_length=50,unique=True)
+    region =models.ForeignKey(Region)
+    def clean(self):
+        self.nom =self.nom.capitalize()
+    def __str__(self):
+        return " %s " %(self.nom)        
+class Commune(models.Model):
+    nom = models.CharField(max_length=50,unique=True)
+    departemant = models.ForeignKey(Departemant)
+    def clean(self):
+        self.nom =self.nom.capitalize()
+    def __str__(self):
+        return " %s " %(self.nom)
 
-        
+#classe information 
+class Info(models.Model):
+    nom =models.CharField(max_length=20,primary_key=True,unique=True)
+    adresse=models.CharField(max_length=50)
+    telephone_mobile =models.IntegerField()
+    telephone_fixe=models.IntegerField()
+    email=models.EmailField()
+    categorie=models.ForeignKey(SousCategorie)
+    localisation=models.ForeignKey(Commune)
+    date_creation=models.DateTimeField('date creation')
+
+    def clean(self):
+                self.nom = self.nom.capitalize()
+
+    def __str__(self):
+        return " %s  %s  %s " % (self.nom ,self.adresse,str(self.telephone_mobile))       
 
 
