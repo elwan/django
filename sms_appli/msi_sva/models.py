@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import RegexValidator
 # Create your models here.
 
 
@@ -96,8 +96,12 @@ class Commune(models.Model):
 class Info(models.Model):
     nom =models.CharField(max_length=20,primary_key=True,unique=True)
     adresse=models.CharField(max_length=50)
-    telephone_mobile =models.IntegerField()
-    telephone_fixe=models.IntegerField()
+    phone_regex = RegexValidator(regex=r'^7\d{8}$', message="Phone number must be entered in the format: '7xxxxxxxx'. Up to 9 digits allowed.")
+    #telephone_mobile =models.IntegerField()
+    telephone_mobile = models.CharField(validators=[phone_regex],blank=True,max_length=9)
+    phone_fix_regex = RegexValidator(regex=r'^3\d{8}$', message="Phone number must be entered in the format: '3xxxxxxxx'. Up to 9 digits allowed.")
+    #telephone_fixe=models.IntegerField()
+    telephone_fixe=models.CharField(validators=[phone_fix_regex],blank=True,max_length=9)
     email=models.EmailField()
     categorie=models.ForeignKey(SousCategorie)
     localisation=models.ForeignKey(Commune)

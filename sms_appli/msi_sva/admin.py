@@ -40,5 +40,4 @@ admin.site.register(Campagne,CampagneAdmin)
 
 
 
-
  
