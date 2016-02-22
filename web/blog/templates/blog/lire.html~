@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title> test template avec django </title>
+  </head>
+
+  <body>
+    {% for article in derniers_articles %}
+    <div class ="article">
+      <h3> {{ article.titre}} </h3>
+      <p> {{ article.contenu|truncatewords_html:80}} </p>
+      <p><a href="{% url "blog.views.lire" article.id %}"> lire la suite </a>
+    </div>
+    {% empty %}
+    <p> Aucun article. </p>
+    {% endfor %}
+    
+
+  </body>
+
+</html>

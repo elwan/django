@@ -1,0 +1,27 @@
+<!--{% load static %} -->
+<html>
+  <head>
+    <title> test template avec django </title>
+  </head>
+
+  <body>
+    <h1> Bienvenue sur  ma calculatrice  </h1>
+    {% if resultat < 1 %}
+        <p> {{ nbr1 }} / {{nbr2}}  = {{ resultat}} </p>
+        <p> diviseur trop grand  !!! </p>
+    {% else %}
+        <p> Quotien > au diviseur </p>
+        <p>  {{ nbr1 }} / {{nbr2}}  = {{ resultat}} </p>
+	{% endif %}
+	{# ceci est un commentaire sur une seule ligne concernant l'image de ma princesse à moi heehehehehehe #}
+	<img src="{% static 'blog/princesse.jpg' %}" alt="Ma princesse" width="200" length="300" >
+	{% comment %}
+	vous savez quoi je vais faire un commentaire sur plusieurs lignes
+	tanpis si je fais des fautes la langue de moliére est tres compliquée
+	mais l'apprentissage de django est beaucoup plus facile parce que python est le meilleur language de progammation
+	de sa generation :-)
+	{% endcomment %}
+	
+  </body>
+
+</html>
