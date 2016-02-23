@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title> test formulaire</title>
+  </head>
+  <body>
+    {% if envoi %} votre contenu a été bien enregister merci ! {% endif %}
+    <form action="{% url "blog.views.articleform" %}" method="post">
+
+      {% csrf_token %} 
+      {{ form.as_p }}
+      <input type="submit" value="Envoyer"/>
+  
+    </form>
+
+  </body>
+</html>
+
