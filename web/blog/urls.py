@@ -9,7 +9,9 @@ urlpatterns =[
     url(r'^date$',views.heure_actuelle),
     url(r'^div/(?P<nbr1>\d+)/(?P<nbr2>\d+)$',views.division),
     url(r'^$',views.accueil),
-    url(r'^article/(?P<id>\d+)$',views.lire)
+    url(r'^article/(?P<id>\d+)$',views.lire),
+    url(r'^contact/$',views.contact),
+    url(r'articleform/$',views.articleform)
 ]
 
 
