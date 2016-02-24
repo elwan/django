@@ -1,5 +1,5 @@
 from django import forms
-from blog.models import Article
+from blog.models import Article,Membre
 
 
 class ContactForm(forms.Form):
@@ -21,4 +21,9 @@ class ArticleForm(forms.ModelForm):
         fields=('titre','auteur','contenu','categorie')
         
 
+        
+class MembreForm(forms.ModelForm):
+    class Meta:
+        model = Membre
+        fields =('nom','prenom','addresse','photo')
         

@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,Http404
 from datetime import datetime
 from blog.models import Article
-from blog.forms import ContactForm,ArticleForm
+from blog.forms import ContactForm,ArticleForm,MembreForm
 
 
 # Create your views here.
@@ -96,4 +96,19 @@ def articleform(request):
     return render(request,'blog/articleform.html',locals())
 
 
+def nouveau_membre(request):
 
+    if request.method == 'POST':
+        form = MembreForm(request.POST,request.FILES)
+        if form.is_valid():
+            #test=form.cleaned_data["nom"] #Recuperation des valeurs de du formulaire 
+            form.save()
+            sauvegarde = True
+            form = MembreForm()
+
+    else:
+        form = MembreForm()
+
+    return render(request,'blog/membre.html',locals())
+
+     

@@ -11,7 +11,8 @@ urlpatterns =[
     url(r'^$',views.accueil),
     url(r'^article/(?P<id>\d+)$',views.lire),
     url(r'^contact/$',views.contact),
-    url(r'articleform/$',views.articleform)
+    url(r'articleform/$',views.articleform),
+    url(r'membre/$',views.nouveau_membre)
 ]
 
 
