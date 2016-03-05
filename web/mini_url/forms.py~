@@ -1,0 +1,9 @@
+import django forms
+from mini_url.models import MiniUrl
+
+class MinuUrlForm(forms.Form):
+    class Meta:
+        models=MiniUrl
+        fields= ('Url','pseudo')
+
+        

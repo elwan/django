@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title> liste des raccourcis  </title>
+  </head>
+
+  <body>
+    {% for racc  in liste %}
+    <div class ="raccourci">
+    <h3> {{racc.url}} via  <a href="{% url "url_redirection" racc.code %}" > {{request.get_host}}/{{racc.code }} </a>   ({{racc.nbre_acces}} accés) <h3>  
+    </div>
+    {% empty %}
+    <p> Aucun raccourci. </p>
+    {% endfor %}
+
+  </body>
+
+</html>

@@ -1,0 +1,21 @@
+from django.db import models
+#mport random
+#mport string 
+
+# Create your models here.
+
+class MiniUrl(Models.model):
+    url = models.URLField(verbose_name='url',unique=True)
+    code = models.CharField(max_length=50,unique=True)
+    date = models.DateField(auto_now_add=True)
+    nbre_acces=models.IntegerField(default=0)
+    pseudo = models.CharField(max_length=100)
+
+#   def generer(nb_caracteres):
+#       caracteres = string.ascii_letters + string.digits
+#       aleratoire = [random.choice(caracteres) for _ in range(nb_caracteres)]
+#
+#       return ''.join(aleratoire)
+
+    
+    
