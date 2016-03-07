@@ -3,7 +3,7 @@ from django.http import HttpResponse,Http404
 from datetime import datetime
 from blog.models import Article
 from blog.forms import ContactForm,ArticleForm,MembreForm
-
+from django.views.generic ListView, TemplateView
 
 # Create your views here.
 
@@ -41,10 +41,10 @@ def division(request,nbr1,nbr2):
         return render(request,'blog/division.html',locals())
 
     
-def accueil (request):
+#def accueil (request):
     """ afficher tous les artciles de notre blog """
-    article = Article.objects.all()
-    return render(request,'blog/accueil.html',{'derniers_articles':article})
+#    article = Article.objects.all()
+#    return render(request,'blog/accueil.html',{'derniers_articles':article})
 
 def lire(request,id):
     """ afficher un article au complet"""
@@ -111,4 +111,15 @@ def nouveau_membre(request):
 
     return render(request,'blog/membre.html',locals())
 
+#Les vues génériques avec template view
+class FaqView(TemplateView):
+    template_name= "blog/faq.html"  #Chemin vers le template a afficher
+    
      
+#Liste les artciles avec les vues generic en utilisant listview
+
+class ListeArticles(ListView):
+    model = Article
+    context_object_name = "derniers_articles"
+    template_name = "blog/accueil.html"
+    paginate_by = 5
