@@ -3,7 +3,7 @@ from django.http import HttpResponse,Http404
 from datetime import datetime
 from blog.models import Article
 from blog.forms import ContactForm,ArticleForm,MembreForm
-from django.views.generic ListView, TemplateView
+from django.views.generic import ListView, TemplateView
 
 # Create your views here.
 
