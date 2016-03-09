@@ -1,0 +1,13 @@
+<!--{% load static %} -->
+<html>
+  <head>
+    <title>test template avec django</title>
+  </head>
+  <body>
+    
+    <h1> {{membre.nom}}  <span class="small">  {{membre.prenom}} </span> </h1> 
+      <p class="infos"> {{membre.addresse}} </p>
+    <div class = "contenu"> <img src="{{membre.photo.url}}" /> </div>
+
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title> test template avec django </title>
+  </head>
+
+  <body>
+    {% for membre in derniers_membres %}
+    <div class ="article">
+      <h3> {{ membre.nom}} </h3>
+      <p> {{ membre.prenom}} </p>
+      <p><a href="{% url "lire_membre" membre.id %}"> afficher les details </a>
+    </div>
+    {% empty %}
+    <p> Aucun membre. </p>
+    {% endfor %}
+    {# Mise en forme de la pagination ici #}
+    {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">Précédente</a> —
+      {% endif %}
+      Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+      {% if page_obj.has_next %}
+      — <a href="?page={{ page_obj.next_page_number }}">Suivante</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </body>
+
+</html>
