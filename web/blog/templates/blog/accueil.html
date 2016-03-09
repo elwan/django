@@ -8,7 +8,7 @@
     <div class ="article">
       <h3> {{ article.titre}} </h3>
       <p> {{ article.contenu|truncatewords_html:80}} </p>
-      <p><a href="{% url "blog.views.lire" article.id %}"> lire la suite </a>
+      <p><a href="{% url "lire_article" article.id %}"> lire la suite </a>
     </div>
     {% empty %}
     <p> Aucun article. </p>

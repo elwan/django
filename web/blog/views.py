@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404 
 from django.http import HttpResponse,Http404
 from datetime import datetime
-from blog.models import Article
+from blog.models import Article,Membre
 from blog.forms import ContactForm,ArticleForm,MembreForm
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView,DetailView 
 
 # Create your views here.
 
@@ -46,15 +46,15 @@ def division(request,nbr1,nbr2):
 #    article = Article.objects.all()
 #    return render(request,'blog/accueil.html',{'derniers_articles':article})
 
-def lire(request,id):
+#def lire(request,id):
     """ afficher un article au complet"""
     #try:
     #    article=Article.objects.get(id=id)
 
     #except Article.DoesNotExist:
     #    raise Http404
-    article = get_object_or_404(Article,id=id)
-    return render(request,'blog/lire.html',{'article':article})
+#    article = get_object_or_404(Article,id=id)
+#    return render(request,'blog/lire.html',{'article':article})
 
 
 def contact(request):
@@ -123,3 +123,35 @@ class ListeArticles(ListView):
     context_object_name = "derniers_articles"
     template_name = "blog/accueil.html"
     paginate_by = 5
+
+
+#Lire un article avec DetailView
+
+class LireArticles(DetailView):
+    model=Article
+    context_object_name="article"
+    template_name = "blog/lire.html"
+
+    def get_object(self):
+        #Recuper l'objet via la super-classe
+        article=super(LireArticles,self).get_object()
+        article.nb_vues +=1 #compter le nombre de vue 
+        article.save()
+
+        return article # retournns l'article 
+
+
+#Afficher la liste des membre avec ListView des vues génériques
+
+class ListeMembres(ListView):
+    model=Membre
+    template_name="blog/listmembre.html"
+    context_object_name="derniers_membres"
+    paginate_by=5
+
+
+class LireMembres(DetailView):
+    model = Membre
+    context_object_name="membre"
+    template_name="blog/liremembre.html"
+    

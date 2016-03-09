@@ -16,6 +16,7 @@ class Article(models.Model):
     contenu = models.TextField(null=True)
     date = models.DateTimeField(auto_now_add=True,auto_now=False,verbose_name="Date de parution")
     categorie=models.ForeignKey('Categorie')
+    nb_vues=models.IntegerField(default=0)
 
     def __str__(self):
         return self.titre
