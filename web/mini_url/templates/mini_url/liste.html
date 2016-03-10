@@ -6,7 +6,15 @@
   <body>
     {% for racc  in liste %}
     <div class ="raccourci">
-    <h3> {{racc.url}} via  <a href="{% url "url_redirection" racc.code %}" > {{request.get_host}}/{{racc.code }} </a>   ({{racc.nbre_acces}} accés) <h3>  
+      
+      <h3> {{racc.url}} via  <a href="{% url "url_redirection" racc.code %}" > {{request.get_host}}/{{racc.code }} </a>   ({{racc.nbre_acces}} accés) <h3>
+	  <ul>
+	    <li>
+	      <a  href="{% url "url_update" racc.code  %}" > Editer </a>{# editer les raccourcies url #}
+	       - 
+	      <a href ="{% url "url_delete" racc.code %}" > Supprimer </a>{# supprimer un raccourcie url #}
+	    </li>
+	  </ul>
     </div>
     {% empty %}
     <p> Aucun raccourci. </p>

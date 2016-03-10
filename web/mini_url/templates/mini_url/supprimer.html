@@ -1,5 +1,6 @@
+
 <form action=""  method="post" > {# utiliser le meme template pour createview et updateview #}
-  
+  {{ mini_url.code }} --> {{ mini_url.url}} créée le {{ mini_url.date|date:"DATE_FORMAT"}}
   {% csrf_token %}
   {{form.as_p}}
   
