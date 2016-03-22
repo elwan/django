@@ -1,0 +1,17 @@
+<h1> liste des passagers </h1>
+<body>
+ 
+{% for passager in derniers_passager %}
+<div class="passager">
+  <ul>
+    <li> {{ passager.nom }} </li>
+    <li> {{ passager.prenom }} </li>
+    <li> {{ passager.destination }} </li>
+    <li> {{ passager.prix_transport}} </li>
+    <li> {{ passager.vehicule}} </li>
+  </ul>
+</div>
+{% empty %}
+<p> aucun passager !</p>
+{% endfor %}
+</body>
