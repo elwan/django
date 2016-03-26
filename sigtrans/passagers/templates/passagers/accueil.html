@@ -1,6 +1,7 @@
 <h1> liste des passagers </h1>
 <body>
- 
+  <a href="{% url "create_passager" %}"> <h3> Ajouter un nouveau passager </h3> </a>
+     
 {% for passager in derniers_passager %}
 <div class="passager">
   <ul>
@@ -10,8 +11,29 @@
     <li> {{ passager.prix_transport}} </li>
     <li> {{ passager.vehicule}} </li>
   </ul>
+  <ul>
+    <li>
+      <a  href="{% url "update_passager" passager.id %}" > Editer </a>{# editer les raccourcies url #}
+      -
+      <a href="{% url "delete_passager" passager.id %}" > Supprimer </a>{# supprimer un raccourcie url #}
+    </li>
+   </ul>
 </div>
 {% empty %}
 <p> aucun passager !</p>
 {% endfor %}
+
+{# Mise en forme de la pagination ici #}
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+  <a href="?page={{ page_obj.previous_page_number }}">Précédente</a> —
+  {% endif %}
+  Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+  {% if page_obj.has_next %}
+  — <a href="?page={{ page_obj.next_page_number }}">Suivante</a>
+  {% endif %}
+</div>
+{% endif %}
+
 </body>
