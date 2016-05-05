@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import  Question,Info,Categorie,SousCategorie,Reponse,Campagne,Vote,Region,Departement,Commune,Sms_recu
+from .models import  Question,Info,Categorie,SousCategorie,Reponse,Campagne,Vote,Region,Departement,Commune,Sms_recu,Dictionnaire
 
 #admin.site.register(Campagne)
 #admin.site.register(Localisation)
@@ -11,6 +11,7 @@ admin.site.register(Info)
 #admin.site.register(Region)
 #admin.site.register(Departement)
 #admin.site.register(Commune)
+admin.site.register(Dictionnaire)
 admin.site.register(Sms_recu)
 
 class Choix_reponse(admin.StackedInline):

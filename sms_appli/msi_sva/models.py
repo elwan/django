@@ -25,7 +25,7 @@ class Categorie(models.Model):
     date_creation=models.DateTimeField('date creation',auto_now_add=True)
     #case sensivity in input data 
     def clean(self):
-                self.nom_categorie = self.nom_categorie.capitalize()
+        self.nom_categorie = self.nom_categorie.capitalize()
     
     def __str__(self):
         return self.nom_categorie
@@ -35,7 +35,7 @@ class SousCategorie(models.Model):
     categorie=models.ForeignKey(Categorie)
     date_creation=models.DateTimeField('date creation',auto_now_add=True)
     def clean(self):
-                self.nom_sous_categorie = self.nom_sous_categorie.capitalize()
+        self.nom_sous_categorie = self.nom_sous_categorie.capitalize()
     
     def __str__(self):
         return self.nom_sous_categorie
@@ -55,7 +55,7 @@ class Campagne(models.Model):
     date_campagne=models.DateTimeField('Date creation',auto_now_add=True)
 
     def clean(self):
-                        self.nom = self.nom.capitalize()
+        self.nom = self.nom.capitalize()
     #def clean(self):
     #    self.nom = self.nom.capitalize()
 
@@ -113,7 +113,7 @@ class Info(models.Model):
     tagline = models.TextField('Tags',max_length=255,blank=True)
 
     def clean(self):
-                self.nom = self.nom.capitalize()
+        self.nom = self.nom.capitalize()
 
     def __str__(self):
         return " %s  %s  %s " % (self.nom ,self.adresse,str(self.telephone_mobile))       
@@ -128,6 +128,16 @@ class Sms_recu(models.Model):
     date_enregistrement=models.DateTimeField(auto_now_add=True)
     mot_cle=models.CharField(max_length=10)
     def __str__(self):
-        return  "%s %s %s %s %s %s %s" % (self.numero,self.message_text,str(self.id),str(self.numero_court),self.date_reception,self.date_enregistrement,self.mot_cle) 
+        return  "%s %s %s %s %s %s %s" % (self.numero,self.message_text,str(self.id),str(self.numero_court),self.date_reception,self.date_enregistrement,self.mot_cle)
+
+
+
+class Dictionnaire(models.Model):
+    mot = models.CharField(max_length=10,unique=True)
+    definition=models.CharField(max_length=50)
+    synonyme =models.CharField(max_length=20)
+    antonyme = models.CharField(max_length=20)
+    def __str__(self):
+        return "%s %s %s %s " % (self.mot,self.definition,self.synonyme,self.antonyme)
 
     
