@@ -74,7 +74,7 @@ class Vote(models.Model):
         return " %s %s " % (self.nom_candidat,str(self.id_candidat))
 
 class Region(models.Model):
-    nom=models.CharField(max_length=50,unique=True)
+    nom=models.CharField(max_length=50,unique=True,default="Dakar")
     def clean(self):
         self.nom =self.nom.capitalize()
     def __str__(self):
@@ -118,17 +118,20 @@ class Info(models.Model):
     def __str__(self):
         return " %s  %s  %s " % (self.nom ,self.adresse,str(self.telephone_mobile))       
 
-#model pour enregister tous les messsages recus 
+#model pour enregister tous les messsages reçus
+
 class Sms_recu(models.Model):
-    numero = models.CharField(max_length=15)
+    numero = models.IntegerField()
     message_text=models.CharField(max_length=160)
     id_message=models.IntegerField()
     numero_court=models.IntegerField()
     date_reception=models.CharField(max_length=10)
     date_enregistrement=models.DateTimeField(auto_now_add=True)
     mot_cle=models.CharField(max_length=10)
+    
     def __str__(self):
-        return  "%s %s %s %s %s %s %s" % (self.numero,self.message_text,str(self.id),str(self.numero_court),self.date_reception,self.date_enregistrement,self.mot_cle)
+        return str(self.numero)
+        #return  "{0} {1} {2} {3} {4}  {5} {6}".format(self.numero,self.message_text,self.id_message,self.numero_court,self.date_reception,self.date_enregistrement,self.mot_cle)
 
 
 
@@ -139,5 +142,3 @@ class Dictionnaire(models.Model):
     antonyme = models.CharField(max_length=20)
     def __str__(self):
         return "%s %s %s %s " % (self.mot,self.definition,self.synonyme,self.antonyme)
-
-    
