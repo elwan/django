@@ -4,7 +4,6 @@ from msi_sva.models import Sms_recu
 
 def test(request,msg):
     #text= "test de vue"
-
     return HttpResponse(msg)
 
 
@@ -22,14 +21,26 @@ def save_sms(request,id_message,numero_court,numero_telephone,msg,date_reception
     #return HttpResponse("{0} {1} {2} {3} {4} {5}".format(id_message,numero_telephone,numero_court,message,date_reception,mot_cle))
     return HttpResponse(msg)
 
+
 def router_sms(request,msg):
+
+    message = msg
+    messages = message.split('+')
+    
     pass
 
+
 def envoyer_sms(request,numero,message,context):
+    
     pass
 
 def inscription(request):
+
     pass
+
+def vote(request):
+
+    pass 
 
 
 
