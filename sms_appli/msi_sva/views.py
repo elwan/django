@@ -1,5 +1,7 @@
 from django.shortcuts import render,HttpResponse 
 from msi_sva.models import Sms_recu
+import  nexmo
+
 # Create your views here.
 
 def test(request,msg):
@@ -43,4 +45,16 @@ def vote(request):
     pass 
 
 
+#test d'envoi de messaga  avec nexma
 
+def envoi_sms(request,sender,numero,text):
+    """sender=str(sender)
+    numero=str(numero)
+    text=str(text)"""
+    client = nexmo.Client(key='852f8fa2',secret='aa4fcec9ead8902b')
+    msg={'from':sender,'to':numero,'text':text}
+    client.send_message(msg)
+    
+    return HttpResponse(msg.values())
+    
+    

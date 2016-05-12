@@ -19,4 +19,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^msi_sva/',include('msi_sva.urls')),
+    #ajout de url callback from nexmo
+    url(r'^nexmo/',include('nexmo.urls')),
 ]
