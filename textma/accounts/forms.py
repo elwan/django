@@ -3,6 +3,6 @@ from django import forms
 
 # If you don't do this you cannot use Bootstrap CSS
 class LoginForm(AuthenticationForm):
-        username = forms.CharField(label="Login", max_length=30,widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'login'}))
-        password = forms.CharField(label="Password", max_length=30,widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'password','type':'password'}))
+        username = forms.CharField(label="Login", max_length=30,widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'login','placeholder':'Login','required':'True','autofocus':'True'}))
+        password = forms.CharField(label="Password", max_length=30,widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'password','type':'password','placeholder':'Password', 'required':'True'}))
             
