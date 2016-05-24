@@ -20,6 +20,7 @@ from accounts.forms import LoginForm
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^sva/',include('sva.urls')),
+    #url(r'^sva/login/$',views.login,{'template_name':'login.html','authentication_form':LoginForm}),
     url(r'',include('accounts.urls',namespace='accounts')),
     url(r'^login/$',views.login,{'template_name':'login.html','authentication_form':LoginForm}),
     url(r'^logout/$',views.logout,{'next_page':'/login'}),

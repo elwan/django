@@ -29,13 +29,14 @@
 	      </a>
 	      <ul class="dropdown-menu" role="menu">
 		<li>
-		  <a href="/home">home</a>
+		  <a href="/">home</a>
 		</li>
 		<li>
-		  <a href="#">Another action</a>
+          <a  href="{% url "nouveau_message"  %}" >Nouveau Message</a>
 		</li>
-		<li>
-		  <a href="#">Something else here</a>
+        <li>
+          <a  href="{% url "lister_message"  %}" >Lister Message</a>
+		
 		</li>
 		<li class="divider"></li>
 		<li>
