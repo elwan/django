@@ -12,7 +12,7 @@
 	<div class="btn-group">
 	<a class="btn btn-primary"  href="{% url "update_message" message.code %}" role="button" > Editer </a> {# Editer un message #}
 	<a class="btn btn-danger"  href="{% url "delete_message" message.code %}" role="button"> Supprimer </a>{# Supprimer un message #}
-	<a class="btn btn-success"  href="#" role="button" >Envoyer </a> {# Envoyer le message #}
+	<a class="btn btn-success"  href="{% url "envoyer_message" message.code %}" role="button" >Envoyer </a> {# Envoyer le message #}
 	
 	</div>
       </div>

@@ -27,7 +27,7 @@ class Message(models.Model):
     code=models.CharField('Code',max_length=15)
 
     def __str__(self):
-        return "{0} {1} {3}".format(self.numero,self.msg,self.sender)
+        return "{0} {1} {2}".format(self.numero,self.msg,self.sender)
 
     def save(self,*args,**kwargs):
         if self.pk is None:

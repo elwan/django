@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{%  block content %}
+<div class="container">
+  <div class="jumbotron">
+    <div class="alert alert-info">
+      <strong>Info!</strong> <p>  {{message.sender} votre message "{{message.msg}}  à été envoyé au {{ numero }}  </p> 
+      </div>
+       <div class="btn-group " >
+	 <a href="{% url "lister_message" %}" class="btn btn-info" role="button">Retour</a>
+       </div>
+
+  </div>
+  
+ </div>
+   
+{% endblock %}

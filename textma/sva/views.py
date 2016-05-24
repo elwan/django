@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
+from django.shortcuts import render,HttpResponseRedirect,get_object_or_404,HttpResponse
 from sva.forms import MessageForm
 from sva.models import Message
 from django.views.generic import CreateView,UpdateView,DeleteView,ListView
@@ -57,6 +57,15 @@ class MessageDelete(LoginRequiredMixin,DeleteView):
 
 
 #fonction d'envoi de message 
-def envoi_sms():
-    pass 
+def envoi_message(request,code):
+    client = nexmo.Client(key='852f8fa2',secret='aa4fcec9ead8902b') #Api de nexmo
+    message=Message.objects.get(code=code)# recuper l'object à travers son code unique 
+    numero=message.pays.indicatif_pays+message.numero # associer l'indicatif du pays avec le numéro de téléphone 
+    numero_valide = numero.strip('+') # retirer le '+' devant l'indicatif 
+    client.send_message({'from':message.sender,'to':numero_valide,'text':message.msg})#envoyer le message 
+
+    return render(request,'sva/envoi_sms.html',locals())
+    #msg={'from':message.sender,'to':numero_valide,'text':message.msg}
+    #return HttpResponse(msg.values())
+
     
