@@ -18,15 +18,23 @@ class ListeMessage(LoginRequiredMixin,ListView):
     model = Message
     context_object_name ="derniers_messages"
     template_name ="sva/messages.html"
-    paginate_by = 5 
+    paginate_by = 10 
 #@login_required(login_url="login/")
 #@method_decorator(login_required,name='dispatch')
-class MesssageCreate(LoginRequiredMixin,CreateView):
+class MessageCreate(LoginRequiredMixin,CreateView):
     login_url='/login/'
     model = Message
     template_name = "sva/msgcreate.html"
     form_class = MessageForm
     success_url= reverse_lazy("lister_message")
+    #Ajouter le usermane et le userid de l'utilisateur connecté 
+    def form_valid(self,form):
+        object=form.save(commit=False)
+        object.utilisateur = self.request.user.username
+        object.utilisateur_id= self.request.user.id 
+        object.save()
+        return super(MessageCreate,self).form_valid(form)
+        
 
 class MessageUpdate(LoginRequiredMixin,UpdateView):
     login_url='/login/'
@@ -89,8 +97,3 @@ def enregister_reponse(reponse,code):
     rep.save()  #Sauvegarder dans le base  
 
     return True
-
-    
-    
-
-    

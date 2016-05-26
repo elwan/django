@@ -19,8 +19,9 @@ class Message(models.Model):
     numero = models.CharField('Numero Téléphone',validators=[phone_regex],max_length=9)
     sender=models.CharField('From',max_length=10)
     pays = models.ForeignKey(Pays_Destination)
-    msg=models.CharField('Message',max_length=160)
+    msg=models.TextField('Message',max_length=160)
     utilisateur=models.CharField('Utilisateur',max_length=20)
+    utilisateur_id=models.IntegerField(default=0)
     status_message=models.BooleanField(default=False)
     date=models.DateTimeField('Date',auto_now_add=True)
     code=models.CharField('Code',max_length=15)
@@ -31,6 +32,7 @@ class Message(models.Model):
     def save(self,*args,**kwargs):
         if self.pk is None:
             self.code_generator(6)
+            #self.utilisateur=request.username
         super(Message,self).save(*args,**kwargs)
 
     def code_generator(self,nb_caractere):
