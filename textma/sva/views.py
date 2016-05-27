@@ -53,11 +53,11 @@ class MessageUpdate(LoginRequiredMixin,UpdateView):
     success_url = reverse_lazy("lister_message")
 
     def get_object(self,queryset=None):
-        code= self.kwargs.get('code',None)
-
+        code= self.kwargs.get('code',None) #Recuperer le code pour trouver l'object 
+        return get_object_or_404(Message,code=code) # #Recuperer l'object message 
+    
     def form_valid(self,form):
         self.object= form.save()
-
         return HttpResponseRedirect(self.get_success_url())
 
  #views générique pour la suppression des messages    
@@ -116,12 +116,12 @@ def enregister_reponse(request,reponse,code):
 
 @login_required(login_url="/login/") 
 def enregister_message_erreur(request,reponse,code):
-    messaage_erreur = Message_Erreur()
+    message_erreur = Message_Erreur()
 
-    messaage_erreur.message_erreur=str(reponse['messages'][0]['error-text'])
-    messaage_erreur.status= str(reponse['messages'][0]['status'])
-    messaage_erreur.numero= str(reponse['messages'][0]['to'])
-    messaage_erreur.code_message=code
-    messaage_erreur.save()
+    message_erreur.message_erreur=str(reponse['messages'][0]['error-text'])
+    message_erreur.status= str(reponse['messages'][0]['status'])
+    message_erreur.numero= str(reponse['messages'][0]['to'])
+    message_erreur.code_message=code
+    message_erreur.save()
 
     return True 
