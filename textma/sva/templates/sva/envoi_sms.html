@@ -3,9 +3,15 @@
 {%  block content %}
 <div class="container">
   <div class="jumbotron">
+    {% if valide == '0' %}
     <div class="alert alert-info">
-      <strong>Info!</strong> <p>  {{message.sender}} votre message {{message.msg}}  à été envoyé au {{ numero }}  </p> 
-      </div>
+      <strong>Info!</strong> <p>  {{message.sender}} votre message <strong>{{message.msg}}</strong>  à été envoyé au {{ numero }}  </p> 
+    </div>
+    {% else %}
+    <div class = "alert alert-danger">
+       <strong>Info!</strong> <p>  {{message.sender}} votre message <strong>{{message.msg}}</strong>  n'a pas été envoyé au {{ numero }}! Contactez l'administrateur </p>      
+    </div>
+    {% endif %}
        <div class="btn-group " >
 	 <a href="{% url "lister_message" %}" class="btn btn-info" role="button">Retour</a>
        </div>

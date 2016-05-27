@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404,HttpResponse
 from sva.forms import MessageForm
-from sva.models import Message,Reponse
-from django.views.generic import CreateView,UpdateView,DeleteView,ListView
+from sva.models import Message,Reponse,Pays_Destination,Message_Erreur
+from django.views.generic import CreateView,DeleteView,ListView,UpdateView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required #Verification  des utilisateurs connectés pour les fonctions de vue 
 #from django.utils.decorators import method_decorator
@@ -18,7 +18,15 @@ class ListeMessage(LoginRequiredMixin,ListView):
     model = Message
     context_object_name ="derniers_messages"
     template_name ="sva/messages.html"
-    paginate_by = 10 
+    paginate_by = 10
+    
+class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
+    login_url='/login/'
+    model = Message
+    context_object_name ="derniers_messages"
+    template_name ="sva/messages_envoyes.html"
+    paginate_by = 10
+    
 #@login_required(login_url="login/")
 #@method_decorator(login_required,name='dispatch')
 class MessageCreate(LoginRequiredMixin,CreateView):
@@ -72,28 +80,39 @@ def envoi_message(request,code):
     numero_valide = numero.strip('+') # retirer le '+' devant l'indicatif 
     reponse=client.send_message({'from':message.sender,'to':numero_valide,'text':message.msg})#envoyer le message 
     #Enregistrer la réponse du message dans la base de donnée
-    enregister_reponse(reponse,code)
+    valide = reponse['messages'][0]['status']
+    
+    if valide == '0':  # Si le message est envoyé  enregistrer dans la base et changer son status 
+        enregister_reponse(reponse,code)
+        Message.objects.filter(code=code).update(status_message=True)
+    else:                                        #sinon enregistrer le message d'erreur et retourer 
+        enregister_message_erreur(reponse,code)  
     
     return render(request,'sva/envoi_sms.html',locals())
     #msg={'from':message.sender,'to':numero_valide,'text':message.msg}
     #return HttpResponse(msg.values())
 
 def enregister_reponse(reponse,code):
-    dico_mere=reponse #recuperer le dictionnaire 
-    liste_reponses=[]      #premiére liste pour extraire les valeurs du prinier  dict 
-  
-    for key,values in reponse.items(): # Séparer le dictionnaire et mettre les valeurs dans une liste 
-        liste_reponses.append(values) 
 
     rep = Reponse()                                 #Créér un object reponse et remplir des elemets contenue dans le liste 
-    rep.reseau=liste_reponses[0][0]['network']
-    rep.cout_message=liste_reponses[0][0]['message-price']
-    rep.message_id=liste_reponses[0][0]['message-id']
-    rep.numero_telephone=liste_reponses[0][0]['to']
-    rep.status_reponse=liste_reponses[0][0]['status']
-    rep.credit_restant=liste_reponses[0][0]['remaining-balance']
-    rep.compteur_message=liste_reponses[1]      #Mettre le deuxieme élément qui correspond à l'extraction du premier dict
+    rep.reseau=str(reponse['messages'][0]['network'])
+    rep.cout_message=str(reponse['messages'][0]['message-price'])
+    rep.message_id=str(reponse['messages'][0]['message-id'])
+    rep.numero_telephone=str(reponse['messages'][0]['to'])
+    rep.status_reponse=str(reponse['messages'][0]['status'])
+    rep.credit_restant=str(reponse['messages'][0]['remaining-balance'])
+    rep.compteur_message=str(reponse['message-count'])      #Mettre le deuxieme élément qui correspond à l'extraction du premier dict
     rep.code_message = code     #Mettre le code du message qui a été envoyer pour retrouver facile sa réponse 
     rep.save()  #Sauvegarder dans le base  
 
     return True
+def enregister_message_erreur(reponse,code):
+    messaage_erreur = Message_Erreur()
+
+    messaage_erreur.message_erreur=str(reponse['messages'][0]['error-text'])
+    messaage_erreur.status= str(reponse['messages'][0]['status'])
+    messaage_erreur.numero= str(reponse['messages'][0]['to'])
+    messaage_erreur.code_message=code
+    messaage_erreur.save()
+
+    return True 

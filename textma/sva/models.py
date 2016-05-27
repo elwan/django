@@ -11,7 +11,7 @@ class Pays_Destination(models.Model):
     prix_sms = models.IntegerField(default=0)
 
     def __str__(self):
-        return " {0} {1}".format(self.nom_pays,self.indicatif_pays)
+        return " {0} ".format(self.nom_pays)
 
 
 class Message(models.Model):
@@ -55,5 +55,18 @@ class Reponse(models.Model):
 
     def __str__(self):
         return "{0} {1} {2}".format(self.numero_telephone,self.credit_restant,self.status_reponse)
+    
+    
+class Message_Erreur(models.Model):
+    message_erreur = models.CharField('Message',max_length=50)
+    status= models.CharField('Status',max_length=5)
+    numero= models.CharField('Numero Téléphone',max_length=15)
+    code_message= models.CharField('Code Message',max_length=6)
+    date = models.DateTimeField('Date',auto_now_add=True)
+
+    def __str__(self):
+        return " {0} {1}".format(self.status,self.messaage_erreur)
+
+    
     
     
