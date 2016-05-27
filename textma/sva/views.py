@@ -5,21 +5,22 @@ from django.views.generic import CreateView,DeleteView,ListView,UpdateView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required #Verification  des utilisateurs connectés pour les fonctions de vue 
 #from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin #verification des utilisateurs connectés pour les built-in views
+from django.contrib.auth.mixins import LoginRequiredMixin #verification des utilisateurs connectés pour les class built-in views
 import nexmo 
 
 # Create your views here.
 
-#Creer une vue de formulaire avec la vue genereic createview
+#views générique pour lister les messages enregistrés
+#Toutes les classes  vues Génériques necessite un utilisateur logué pour pouvoir etre utiliser et ce grace à au premier paramettre LoginRequiredMixin 
 #@login_required(login_url="login/")
-#method_decorator(login_required,name='dispatch')
 class ListeMessage(LoginRequiredMixin,ListView):
     login_url='/login/'
     model = Message
     context_object_name ="derniers_messages"
     template_name ="sva/messages.html"
     paginate_by = 10
-    
+
+#views générique pour lister  les messages Envoyés
 class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
     login_url='/login/'
     model = Message
@@ -27,8 +28,8 @@ class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
     template_name ="sva/messages_envoyes.html"
     paginate_by = 10
     
-#@login_required(login_url="login/")
-#@method_decorator(login_required,name='dispatch')
+
+#views générique pour la creation  des messages
 class MessageCreate(LoginRequiredMixin,CreateView):
     login_url='/login/'
     model = Message
@@ -43,7 +44,7 @@ class MessageCreate(LoginRequiredMixin,CreateView):
         object.save()
         return super(MessageCreate,self).form_valid(form)
         
-
+#views générique pour la mise à jour  des messages
 class MessageUpdate(LoginRequiredMixin,UpdateView):
     login_url='/login/'
     model = Message
@@ -59,6 +60,7 @@ class MessageUpdate(LoginRequiredMixin,UpdateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
+ #views générique pour la suppression des messages    
 class MessageDelete(LoginRequiredMixin,DeleteView):
     login_url='/login/'
     model = Message
@@ -72,7 +74,8 @@ class MessageDelete(LoginRequiredMixin,DeleteView):
         return get_object_or_404(Message,code=code)
 
 
-#fonction d'envoi de message 
+#fonction d'envoi de message
+@login_required(login_url="/login/") 
 def envoi_message(request,code):
     client = nexmo.Client(key='852f8fa2',secret='aa4fcec9ead8902b') #Api de nexmo
     message=Message.objects.get(code=code)# recuper l'object à travers son code unique 
@@ -83,16 +86,18 @@ def envoi_message(request,code):
     valide = reponse['messages'][0]['status']
     
     if valide == '0':  # Si le message est envoyé  enregistrer dans la base et changer son status 
-        enregister_reponse(reponse,code)
+        enregister_reponse(request,reponse,code)
         Message.objects.filter(code=code).update(status_message=True)
     else:                                        #sinon enregistrer le message d'erreur et retourer 
-        enregister_message_erreur(reponse,code)  
+        enregister_message_erreur(request,reponse,code)  
     
     return render(request,'sva/envoi_sms.html',locals())
     #msg={'from':message.sender,'to':numero_valide,'text':message.msg}
     #return HttpResponse(msg.values())
 
-def enregister_reponse(reponse,code):
+ #sauvegarder les reponses en cas d'envoi réussi du message
+@login_required(login_url="/login/") 
+def enregister_reponse(request,reponse,code):
 
     rep = Reponse()                                 #Créér un object reponse et remplir des elemets contenue dans le liste 
     rep.reseau=str(reponse['messages'][0]['network'])
@@ -106,7 +111,11 @@ def enregister_reponse(reponse,code):
     rep.save()  #Sauvegarder dans le base  
 
     return True
-def enregister_message_erreur(reponse,code):
+
+#Enregister les messages d'erreur quand le sms n'est pas envoyé
+
+@login_required(login_url="/login/") 
+def enregister_message_erreur(request,reponse,code):
     messaage_erreur = Message_Erreur()
 
     messaage_erreur.message_erreur=str(reponse['messages'][0]['error-text'])
