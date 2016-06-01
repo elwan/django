@@ -9,6 +9,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin #verification des util
 import nexmo 
 import requests
 import json
+
+
+
+s= requests.Session() #connection persistante pour l'envoi de plusieur messages (keep a live http)
 # Create your views here
 
 #views générique pour lister les messages enregistrés
@@ -164,39 +168,44 @@ def envoi_message_multi(request,code):
     
     #reponse=client.send_message({'from':message.sender,'to':numero_valide,'text':message.msg})#envoyer le message 
     #Enregistrer la réponse du message dans la base de donnée
-    playload={'api_key':'852f8fa2' ,'api_secret':'aa4fcec9ead8902b'}
+    #playload={'api_key':'852f8fa2' ,'api_secret':'aa4fcec9ead8902b'}
     #preparer la liste de dictionnaire pour l'envoi des messages
     #En ajoutant le message et les numeros et le sender 
     liste_dico_msg =[]   #Liste pour contenir les dico en mettre en paramettre dans l'url  
     liste_numero_envoi_echec=[] #Liste contenant les numéros des messages qui ont échoués 
     liste_numero_envoi_reussi=[] #Liste contenant les numérosn des messages envoyés avec succes 
-    for num in liste_numero_valide: 
+    for num in liste_numero_valide:
+        playload={'api_key':'852f8fa2' ,'api_secret':'aa4fcec9ead8902b'}
         playload['from']=message.sender
         playload['to']=num 
         playload['text']=message.message
         liste_dico_msg.append(playload) #Ajouter le dictonnaire complete a la liste
-
-    s= requests.Session() #connection persistante pour l'envoi de plusieur messages (keep a live http)
-    nexmo_url = 'https://rest.nexmo.com/sms/json' 
+     
     for dico_msg in liste_dico_msg: #iterer la liste pour placer chaque dico dans l'url 
-        reponse = s.post(nexmo_url,json=dico_msg) #Recuper la réponse de l'envoi
-        data = reponse.json() # recuperer la reponse sous format json 
+        data = send_sms(dico_msg) # recuperer la reponse sous format json 
         valide = data['messages'][0]['status'] #Recuperer le status du message 
-
         if valide == '0':  # Si le message est envoyé  enregistrer dans la base et changer son status
             enregister_reponse(request,data,code) 
             Message_Multi.objects.filter(code=code).update(status_message=True)
             liste_numero_envoi_reussi.append(data['messages'][0]['to'])#ajout du numéro dans la liste 
-            
         else:                                        #sinon enregistrer le message d'erreur et retourer
             enregister_message_erreur(request,data,code)
             liste_numero_envoi_echec.append(data['messages'][0]['to']) #ajout du numéro dans la liste 
             
     return render(request,'sva/envoi_sms.html',locals())
     
-    #return HttpResponse(reponse.json()['messages'])
+    #return HttpResponse(liste_dico_msg)
 
  #sauvegarder les reponses en cas d'envoi réussi du message
+
+def send_sms(message):
+    
+    nexmo_url = 'https://rest.nexmo.com/sms/json'
+    reponse = s.post(nexmo_url,json=message) #Recuper la réponse de l'envoi
+
+    return reponse.json()
+
+     
 @login_required(login_url="/login/") 
 def enregister_reponse(request,reponse,code):
 
