@@ -13,7 +13,12 @@
        {{ form.as_p }}
        <div class="btn-group " >
 	 <input type="submit" class="btn btn-danger"  value="Supprimer"/>
+         {% if delete_message.code|length == 06 %}
 	 <a href="{% url "lister_message" %}" class="btn btn-info" role="button">Retour</a>
+         {% else %}
+         <a href="{% url "lister_message_multi" %}" class="btn btn-info" role="button">Retour</a>
+         {% endif %}
+         
        </div>
        
      </form>

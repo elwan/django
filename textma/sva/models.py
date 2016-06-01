@@ -17,14 +17,14 @@ class Pays_Destination(models.Model):
 class Message(models.Model):
     phone_regex = RegexValidator(regex=r'^7\d{8}$', message="Phone number must be entered in the format: '7xxxxxxxx'. Up to 9 digits allowed.")
     numero = models.CharField('Numero Téléphone',validators=[phone_regex],max_length=9)
-    sender=models.CharField('From',max_length=10)
+    sender=models.CharField('From',max_length=15)
     pays = models.ForeignKey(Pays_Destination)
     msg=models.TextField('Message',max_length=160)
     utilisateur=models.CharField('Utilisateur',max_length=20)
     utilisateur_id=models.IntegerField(default=0)
     status_message=models.BooleanField(default=False)
     date=models.DateTimeField('Date',auto_now_add=True)
-    code=models.CharField('Code',max_length=15)
+    code=models.CharField('Code',max_length=10)
 
     def __str__(self):
         return "{0} {1} {2}".format(self.numero,self.msg,self.sender)
@@ -50,18 +50,17 @@ class Reponse(models.Model):
     status_reponse=models.CharField('Status',max_length=10)
     credit_restant=models.CharField('Crédit restant',max_length=5)
     compteur_message=models.CharField('Compteur Message',max_length=10)
-    code_message= models.CharField('Code Message',max_length=6)
+    code_message= models.CharField('Code Message',max_length=10)
     date_reponse= models.DateTimeField('Date',auto_now_add=True)
 
     def __str__(self):
         return "{0} {1} {2}".format(self.numero_telephone,self.credit_restant,self.status_reponse)
-    
-    
+        
 class Message_Erreur(models.Model):
     message_erreur = models.CharField('Message',max_length=50)
     status= models.CharField('Status',max_length=5)
     numero= models.CharField('Numero Téléphone',max_length=15)
-    code_message= models.CharField('Code Message',max_length=6)
+    code_message= models.CharField('Code Message',max_length=10)
     date = models.DateTimeField('Date',auto_now_add=True)
 
     def __str__(self):
@@ -70,9 +69,26 @@ class Message_Erreur(models.Model):
 class Message_Multi(models.Model):
     phone_regex = RegexValidator(regex=r'^(7\d{8},?)+$', message="Phone number must be entered in the format: '7xxxxxxxx'. Up to 9 digits allowed.")
     numero = models.CharField('Numero Téléphone',validators=[phone_regex],max_length=1000)
+    sender = models.CharField('From',max_length=15)
+    pays = models.ForeignKey(Pays_Destination)
+    message = models.TextField('Message',max_length=160)
+    utilisateur = models.CharField('Utilisateur',max_length=20)
+    utilisateur_id = models.IntegerField(default=0)
+    status_message = models.BooleanField(default=False)
+    date = models.DateTimeField('Date',auto_now_add=True)
+    code = models.CharField('Code',max_length=7)
 
     def __str__(self):
-        return  "{}".format(self.numero)
-        
-    
+        return "{0} {1} {2}".format(self.numero,self.message,self.sender)
+
+    def save(self,*args,**kwargs):
+        if self.pk is None:
+            self.code_generator(7)
+            #self.utilisateur=request.username
+        super(Message_Multi,self).save(*args,**kwargs)
+
+    def code_generator(self,nb_caractere):
+        car = string.ascii_letters + string.digits
+        aleatoire = [random.choice(car) for _ in range(nb_caractere)]
+        self.code =''.join(aleatoire)
     

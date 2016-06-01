@@ -1,18 +1,20 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404,HttpResponse
-from sva.forms import MessageForm
-from sva.models import Message,Reponse,Pays_Destination,Message_Erreur
+from sva.forms import MessageForm,MessageMultiForm
+from sva.models import Message,Reponse,Pays_Destination,Message_Erreur,Message_Multi
 from django.views.generic import CreateView,DeleteView,ListView,UpdateView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required #Verification  des utilisateurs connectés pour les fonctions de vue 
 #from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin #verification des utilisateurs connectés pour les class built-in views
 import nexmo 
-
+import requests
+import json
 # Create your views here.
 
 #views générique pour lister les messages enregistrés
 #Toutes les classes  vues Génériques necessite un utilisateur logué pour pouvoir etre utiliser et ce grace à au premier paramettre LoginRequiredMixin 
 #@login_required(login_url="login/")
+
 class ListeMessage(LoginRequiredMixin,ListView):
     login_url='/login/'
     model = Message
@@ -23,12 +25,12 @@ class ListeMessage(LoginRequiredMixin,ListView):
 #views générique pour lister  les messages Envoyés
 class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
     login_url='/login/'
-    model = Message
-    context_object_name ="derniers_messages"
+    model = Message_Multi
+    context_object_name ="messages_envoyes"
     template_name ="sva/messages_envoyes.html"
+    queryset=Message_Multi.objects.filter(status_message=True)
     paginate_by = 10
     
-
 #views générique pour la creation  des messages
 class MessageCreate(LoginRequiredMixin,CreateView):
     login_url='/login/'
@@ -125,3 +127,100 @@ def enregister_message_erreur(request,reponse,code):
     message_erreur.save()
 
     return True 
+
+
+#zone envoi multiple ###############################
+
+class MessageMultiCreate(LoginRequiredMixin,CreateView):
+    login_url='/login/'
+    model = Message_Multi
+    template_name = "sva/msgcreate.html"
+    form_class = MessageMultiForm
+    success_url= reverse_lazy("lister_message_multi")
+    #Ajouter le usermane et le userid de l'utilisateur connecté 
+    def form_valid(self,form):
+        object=form.save(commit=False)
+        object.utilisateur = self.request.user.username
+        object.utilisateur_id= self.request.user.id 
+        object.save()
+        return super(MessageMultiCreate,self).form_valid(form)
+        
+#views générique pour la mise à jour  des messages
+class MessageMultiUpdate(LoginRequiredMixin,UpdateView):
+    login_url='/login/'
+    model = Message_Multi
+    template_name= "sva/msgcreate.html"
+    form_class = MessageMultiForm
+    success_url = reverse_lazy("lister_message_multi")
+
+    def get_object(self,queryset=None):
+        code= self.kwargs.get('code',None) #Recuperer le code pour trouver l'object 
+        return get_object_or_404(Message_Multi,code=code) # #Recuperer l'object message 
+    
+    def form_valid(self,form):
+        self.object= form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+class ListeMultiMessage(LoginRequiredMixin,ListView):
+    login_url='/login/'
+    model = Message_Multi
+    context_object_name ="multi_messages"
+    template_name ="sva/messages_multi.html"
+    queryset=Message_Multi.objects.filter(status_message=False)
+    paginate_by = 10
+
+class MessageMultiDelete(LoginRequiredMixin,DeleteView):
+    login_url='/login/'
+    model = Message_Multi
+    context_object_name ="delete_message"
+    template_name = "sva/deletemsg.html"
+    success_url = reverse_lazy("lister_message_multi")
+    form_class = MessageMultiForm
+
+    def get_object(self,queryset=None):
+        code= self.kwargs.get('code',None)
+        return get_object_or_404(Message_Multi,code=code)
+
+
+@login_required(login_url="/login/")
+def envoi_message_multi(request,code):
+
+    message=Message_Multi.objects.get(code=code)# recuper l'object à travers son code unique
+    liste_numero=message.numero.split(',')  #mettre les numeros dans la liste 
+    liste_numero_indicatif = [ message.pays.indicatif_pays+num  for num in set(liste_numero)] #ajouter l'indicatif du pays sur chaque numéro dans la liste
+                                                                                              #enlever les doublons de numéros avec la fonction set() 
+    liste_numero_valide = [num.strip('+') for num in liste_numero_indicatif] # enlever de la liste le '+' devant l'indicatif
+    
+    #reponse=client.send_message({'from':message.sender,'to':numero_valide,'text':message.msg})#envoyer le message 
+    #Enregistrer la réponse du message dans la base de donnée
+    playload={'api_key':'852f8fa2' ,'api_secret':'aa4fcec9ead8902b'}
+    #preparer la liste de dictionnaire pour l'envoi des messages
+    #En ajoutant le message et les numeros et le sender 
+    liste_dico_msg =[]   #Liste pour contenir les dico en mettre en paramettre dans l'url  
+    liste_numero_envoi_echec=[] #Liste contenant les numéros des messages qui ont échoués 
+    liste_numero_envoi_reussi=[] #Liste contenant les numérosn des messages envoyés avec succes 
+    for num in liste_numero_valide: 
+        playload['from']=message.sender
+        playload['to']=num 
+        playload['text']=message.message
+        liste_dico_msg.append(playload) #Ajouter le dictonnaire complete a la liste
+
+    s= requests.Session() #connection persistante pour l'envoi de plusieur messages (keep a live http)
+    nexmo_url = 'https://rest.nexmo.com/sms/json' 
+    for dico_msg in liste_dico_msg: #iterer la liste pour placer chaque dico dans l'url 
+        reponse = s.post(nexmo_url,json=dico_msg) #Recuper la réponse de l'envoi
+        data = reponse.json() # recuperer la reponse sous format json 
+        valide = data['messages'][0]['status'] #Recuperer le status du message 
+
+        if valide == '0':  # Si le message est envoyé  enregistrer dans la base et changer son status
+            enregister_reponse(request,data,code) 
+            Message_Multi.objects.filter(code=code).update(status_message=True)
+            liste_numero_envoi_reussi.append(data['messages'][0]['to'])#ajout du numéro dans la liste 
+            
+        else:                                        #sinon enregistrer le message d'erreur et retourer
+            enregister_message_erreur(request,data,code)
+            liste_numero_envoi_echec.append(data['messages'][0]['to']) #ajout du numéro dans la liste 
+            
+    return render(request,'sva/envoi_sms.html',locals())
+    
+    #return HttpResponse(reponse.json()['messages'])
