@@ -107,7 +107,7 @@ class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
     #queryset=Message_Multi.objects.filter(utilisateur_id=request.user)
     paginate_by = 10
     def get_queryset(self):
-        return Message_Multi.objects.filter(status_message=True).filter(utilisateur=self.request.user)
+        return Message_Multi.objects.filter(status_message=True).filter(utilisateur=self.request.user).order_by('-date')
     
 
 class ListeMultiMessage(LoginRequiredMixin,ListView):
@@ -118,7 +118,7 @@ class ListeMultiMessage(LoginRequiredMixin,ListView):
     #queryset=Message_Multi.objects.filter(status_message=False)
     paginate_by = 10
     def get_queryset(self):
-        return Message_Multi.objects.filter(Q(status_message=False) & Q(utilisateur=self.request.user))
+        return Message_Multi.objects.filter(Q(status_message=False) & Q(utilisateur=self.request.user)).order_by('-date')
 
 
     

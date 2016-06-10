@@ -81,7 +81,7 @@ class Message_Multi(models.Model):
     #utilisateur_id = models.IntegerField('ID Utilisateur',default=0)
     utilisateur = models.ForeignKey(Profile)
     status_message = models.BooleanField(default=False)
-    date = models.DateTimeField('Date',auto_now_add=True)
+    date = models.DateTimeField('Date',auto_now_add=True,editable=False)
     code = models.CharField('Code',max_length=7)
 
     def __str__(self):
