@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'sva',
     #'comptes',
     'accounts',
+    'bootstrap3',
 ]
 
 MIDDLEWARE_CLASSES = [
