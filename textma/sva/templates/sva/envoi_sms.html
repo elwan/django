@@ -5,7 +5,6 @@
   <div class="jumbotron">
     {% if liste_dico_msg|length == 1 %} {# pour l'envoi d'un seul message #}
         
-     
         {% if valide == '0' %}
         <div class="alert alert-info">
           <strong>Info!</strong> <p>  {{message.sender}} votre message <strong>{{message.msg}}</strong>  à été envoyé au {{ message.numero }}  </p> 
@@ -16,17 +15,17 @@
          </div>
           {% endif %}
     
-    {% else %}
+    {% else %} {# pour l'envoi multiple #}
     
-          {% if liste_numero_envoi_reussi|length !=0  %}    
+          {% if liste_numero_envoi_reussi|length != 0  %}    
              <div class="alert alert-info">
-                 <strong>Info!</strong> <p>  {{message.sender}} vos  <strong>{{ liste_numero_envoi_reussi|length }} </strong> ont  été envoyé avec succés! Merci de votre confiance </p> 
+                 <strong>Info!</strong> <p>  {{message.sender}}   <strong>{{ liste_numero_envoi_reussi|length }} message{{liste_numero_envoi_reussi | pluralize}} </strong> ont  été envoyé avec succés! Merci de votre confiance </p> 
 
              </div>
-          {% elif liste_numero_envoi_echec|length !=0 %}
+          {% elif liste_numero_envoi_echec|length != 0 %}
     
               <div class = "alert alert-danger">
-                  <strong>Info!</strong> <p>  {{message.sender}}  <strong> {{liste_numero_envoi_echec|length}}</strong>  n'ont pas été envoyé !Merci de  Contacter l'administrateur </p>      
+                  <strong>Info!</strong> <p>  {{message.sender}}   <strong> {{liste_numero_envoi_echec|length}} message{{liste_numero_envoi_echec | pluralize}}  </strong>  n'ont pas été envoyé !Merci de  Contacter l'administrateur </p>      
 
               </div>
            {% endif%}
@@ -39,7 +38,20 @@
        {#{{reponse}}#}
 
   </div>
+  {# Afficher la liste des numéros qui ont échoues à l'envoi #}
+  {% if liste_numero_envoi_echec|length >= 2 %}
   
+  <div class="jumbotron"  >
+    <div class= "alert alert-info" >
+      <p> Numéros échoués: </p> <br>
+    {% for num in liste_numero_envoi_echec %}
+    {% if not forloop.first %}, {% endif %}
+      {{ num}}
+    {% endfor %}
+    </div>
+  
+  </div>
+  {% endif %}
  </div>
    
 {% endblock %}

@@ -131,3 +131,4 @@ LOGIN_REDIRECT_URL = '/' # It means home view
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,"static"),
 ]
+AUTH_USER_MODEL='accounts.Profile'

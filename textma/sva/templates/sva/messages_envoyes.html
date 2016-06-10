@@ -8,7 +8,7 @@
       	<h3> {{ message.numero }} </h3>
 	<p> {{ message.message  }}  </p>
 	<p> {{ message.code }} </p>
-	<h4> enregister par {{ message.utilisateur}} </h4>
+	<h4> enregister par {{ request.user.username }} </h4>
         <p class="text-left">Nombre de caractéres: <span class="badge text-left" > {{message.message | length }} </span> </p>
 	<div class="btn-group">
 	<a class="btn btn-primary"  href="{% url "update_message_multi" message.code %}" role="button" > Editer </a> {# Editer un message #}

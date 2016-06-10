@@ -22,7 +22,8 @@ urlpatterns = [
     url(r'^sva/',include('sva.urls')),
     #url(r'^sva/login/$',views.login,{'template_name':'login.html','authentication_form':LoginForm}),
     url(r'',include('accounts.urls',namespace='accounts')),
-    url(r'^login/$',views.login,{'template_name':'login.html','authentication_form':LoginForm}),
-    url(r'^logout/$',views.logout,{'next_page':'/login'}),
+    #url(r'^login/$',views.login,{'template_name':'login.html','authentication_form':LoginForm}),
+    #url(r'^logout/$',views.logout,{'next_page':'/login'}),
+    #url(r'^register/$',views.register),
     #url(r'^compte/',include('comptes.urls',namespace='comptes')),
 ]

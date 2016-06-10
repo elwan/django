@@ -1,10 +1,12 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404,HttpResponse
-from sva.forms import MessageForm,MessageMultiForm
-from sva.models import Message,Reponse,Pays_Destination,Message_Erreur,Message_Multi
+from sva.forms import MessageMultiForm
+from sva.models import Reponse,Pays_Destination,Message_Erreur,Message_Multi
 from django.views.generic import CreateView,DeleteView,ListView,UpdateView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required #Verification  des utilisateurs connectés pour les fonctions de vue 
 #from django.utils.decorators import method_decorator
+from django.db.models import Q
+from accounts.models import Profile
 from django.contrib.auth.mixins import LoginRequiredMixin #verification des utilisateurs connectés pour les class built-in views
 import nexmo 
 import requests
@@ -102,10 +104,24 @@ class ListeMessageEnvoyes(LoginRequiredMixin,ListView):
     model = Message_Multi
     context_object_name ="messages_envoyes"
     template_name ="sva/messages_envoyes.html"
-    queryset=Message_Multi.objects.filter(status_message=True)
+    #queryset=Message_Multi.objects.filter(utilisateur_id=request.user)
     paginate_by = 10
- 
+    def get_queryset(self):
+        return Message_Multi.objects.filter(status_message=True).filter(utilisateur=self.request.user)
+    
 
+class ListeMultiMessage(LoginRequiredMixin,ListView):
+    login_url='/login/'
+    model = Message_Multi
+    context_object_name ="multi_messages"
+    template_name ="sva/messages_multi.html"
+    #queryset=Message_Multi.objects.filter(status_message=False)
+    paginate_by = 10
+    def get_queryset(self):
+        return Message_Multi.objects.filter(Q(status_message=False) & Q(utilisateur=self.request.user))
+
+
+    
 class MessageMultiCreate(LoginRequiredMixin,CreateView):
     login_url='/login/'
     model = Message_Multi
@@ -115,8 +131,8 @@ class MessageMultiCreate(LoginRequiredMixin,CreateView):
     #Ajouter le usermane et le userid de l'utilisateur connecté 
     def form_valid(self,form):
         object=form.save(commit=False)
-        object.utilisateur = self.request.user.username
-        object.utilisateur_id= self.request.user.id 
+        object.utilisateur = self.request.user
+        #object.utilisateur_id= self.request.user.id 
         object.save()
         return super(MessageMultiCreate,self).form_valid(form)
         
@@ -135,14 +151,6 @@ class MessageMultiUpdate(LoginRequiredMixin,UpdateView):
     def form_valid(self,form):
         self.object= form.save()
         return HttpResponseRedirect(self.get_success_url())
-
-class ListeMultiMessage(LoginRequiredMixin,ListView):
-    login_url='/login/'
-    model = Message_Multi
-    context_object_name ="multi_messages"
-    template_name ="sva/messages_multi.html"
-    queryset=Message_Multi.objects.filter(status_message=False)
-    paginate_by = 10
 
 class MessageMultiDelete(LoginRequiredMixin,DeleteView):
     login_url='/login/'
@@ -204,7 +212,6 @@ def send_sms(message):
     reponse = s.post(nexmo_url,json=message) #Recuper la réponse de l'envoi
 
     return reponse.json()
-
      
 @login_required(login_url="/login/") 
 def enregister_reponse(request,reponse,code):
@@ -217,7 +224,10 @@ def enregister_reponse(request,reponse,code):
     rep.status_reponse=str(reponse['messages'][0]['status'])
     rep.credit_restant=str(reponse['messages'][0]['remaining-balance'])
     rep.compteur_message=str(reponse['message-count'])      #Mettre le deuxieme élément qui correspond à l'extraction du premier dict
-    rep.code_message = code     #Mettre le code du message qui a été envoyer pour retrouver facile sa réponse 
+    rep.code_message = code     #Mettre le code du message qui a été envoyer pour retrouver facile sa réponse
+    rep.reponse_utilisateur=request.user
+    #rep.reponse_utilisateur_id=request.user.id
+    
     rep.save()  #Sauvegarder dans le base  
 
     return True
@@ -232,6 +242,9 @@ def enregister_message_erreur(request,reponse,code):
     message_erreur.status= str(reponse['messages'][0]['status'])
     message_erreur.numero= str(reponse['messages'][0]['to'])
     message_erreur.code_message=code
+    message_erreur.msg_erreur_utilisateur=request.user
+    #message_erreur.msg_erreur_utilisateur_id=request.user.id 
     message_erreur.save()
 
-    return True 
+    return True
+##
