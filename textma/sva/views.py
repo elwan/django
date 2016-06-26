@@ -248,3 +248,7 @@ def enregister_message_erreur(request,reponse,code):
 
     return True
 ##
+@login_required(login_url="/login/")
+def tableau_de_bord(request):
+
+    return render(request,'sva/dashbord.html',locals())
