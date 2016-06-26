@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'bases.html' %}
 
 {% block content %}
 
 <div class="container">
   <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-6 col-md-offset-2">
       <div class="login-panel panel panel-default">
 	<div class="panel-heading">
 	  <h3 class="panel-title">Please Sign Up </h3>
@@ -35,8 +35,16 @@
 </div>
 
 {% endblock %}
+
+{% block javascript %}
 <script>
-  $(document).ready(function() {
-  $('.datepicker').datepicker();
-  });
+  {# if  user.is_authenticated #}
+  $("ul.nav.navbar-nav.navbar-right").css("display","none");
+  $("ul.nav.menu").css("display","none");
+  $("ul.user-menu").css("display","none");
+  $("div.col-sm-3.col-lg-2.sidebar").css("display","none");
+  $("ol.breadcrumb").css("display","none");
+
 </script>
+
+{% endblock %}
