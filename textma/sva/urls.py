@@ -15,8 +15,7 @@ urlpatterns= [
     url(r'liste_multi/',views.ListeMultiMessage.as_view(),name="lister_message_multi"),
     url(r'^delete_multi/(?P<code>\w{7})$',views.MessageMultiDelete.as_view(),name="delete_message_multi"),
     url(r'^envoi_multi/(?P<code>\w{7})$',views.envoi_message_multi,name="envoyer_message_multi"),
-    url(r'^dashbord/',views.tableau_de_bord,name="tableau_de_bord"),
-    
+    url(r'^dashbord/',views.tableau_de_bord,name="tableau_de_bord"),   
 ]
 
 
