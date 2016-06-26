@@ -46,8 +46,34 @@
 			</div>
 		</form>
 		<ul class="nav menu">
-			<li class="active"><a href="index.html"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Dashboard</a></li>
-			<li><a href="widgets.html"><svg class="glyph stroked calendar"><use xlink:href="#stroked-calendar"></use></svg> Widgets</a></li>
+		  <li class="active"><a  href="{% url "tableau_de_bord"  %}"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Dashboard</a></li>
+                  <li><a href="{% url "nouveau_message_multi"  %}"><svg class="glyph stroked empty message"><use xlink:href="#stroked-empty-message"></use></svg> Nouveau Message</a></li>
+						  <li><a href="{% url "lister_message_envoyer"  %}"><svg class="glyph stroked two messages"><use xlink:href="#stroked-two-messages"/></svg>Messages Envoyés</a></li>
+						  <li> <a href="{% url "lister_message_multi"  %}"><svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>Messages </a></li>                                          
+						  <li><a href="/logout"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+							
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+		  <li class="active"><a  href="{% url "tableau_de_bord"  %}"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Dashboard</a></li>
+                  <li><a href="{% url "nouveau_message_multi"  %}"><svg class="glyph stroked empty message"><use xlink:href="#stroked-empty-message"></use></svg> Nouveau Message</a></li>
+		  <li><a href="{% url "lister_message_envoyer"  %}"><svg class="glyph stroked two messages"><use xlink:href="#stroked-two-messages"/></svg>Messages Envoyés</a></li>
+		  <li> <a href="{% url "lister_message_multi"  %}"><svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>Messages </a></li>                                    <!-- <li><a href="/logout"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li> -->
+		
+
+                  
+		<!--	<li><a href="widgets.html"><svg class="glyph stroked calendar"><use xlink:href="#stroked-calendar"></use></svg> Widgets</a></li>
 			<li><a href="charts.html"><svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg> Charts</a></li>
 			<li><a href="tables.html"><svg class="glyph stroked table"><use xlink:href="#stroked-table"></use></svg> Tables</a></li>
 			<li><a href="forms.html"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg> Forms</a></li>
@@ -74,9 +100,9 @@
 						</a>
 					</li>
 				</ul>
-			</li>
+			</li> -->
 			<li role="presentation" class="divider"></li>
-			<li><a href="login.html"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+			<li><a href="/logout"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Deconnecter </a></li>
 		</ul>
 
 	</div><!--/.sidebar-->
