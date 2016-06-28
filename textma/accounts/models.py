@@ -11,6 +11,9 @@ class Profile(AbstractUser):
     nombre_sms_restant=models.IntegerField(default=0)
     numero_telephone= models.CharField(validators=[phone_regex],unique=True,max_length=9)
     #date_naissance = models.DateField()
+    #email = models.EmailField(unique=True)
 
-    REQUIRED_FIELDS=['numero_telephone','email']
+    #USERNAME_FIELD='email'
+    REQUIRED_FIELDS = ['numero_telephone']
+    #USERNAME_FIELD = 'email' #Utiliser l'email comme  paramettre de connexion 
     
